@@ -293,7 +293,8 @@
             "500": {
               "description": "Erro interno do servidor."
             }
-          }
+          },
+          "security": [{ "bearerAuth": [] }]
         }
       },
       "/users/email/{email}": {
@@ -382,7 +383,8 @@
             "500": {
               "description": "Erro interno do servidor."
             }
-          }
+          },
+          "security": [{ "bearerAuth": [] }]
         }
       },
       "/groups": {
@@ -414,7 +416,8 @@
             "500": {
               "description": "Erro interno do servidor."
             }
-          }
+          },
+          "security": [{ "bearerAuth": [] }]
         },
         "get": {
           "summary": "Retorna todos os grupos",
@@ -427,7 +430,8 @@
             "500": {
               "description": "Erro interno do servidor."
             }
-          }
+          },
+          "security": [{ "bearerAuth": [] }]
         }
       },
       "/groups/{id}": {
@@ -457,7 +461,8 @@
             "500": {
               "description": "Erro interno do servidor."
             }
-          }
+          },
+          "security": [{ "bearerAuth": [] }]
         },
         "put": {
           "summary": "Atualiza um grupo pelo ID",
@@ -534,7 +539,8 @@
             "500": {
               "description": "Erro interno do servidor."
             }
-          }
+          },
+          "security": [{ "bearerAuth": [] }]
         }
       },
       "/groups/:groupId/users/:userId": {
@@ -574,7 +580,8 @@
             "500": {
               "description": "Erro interno do servidor."
             }
-          }
+          },
+          "security": [{ "bearerAuth": [] }]
         },
         "delete": {
           "summary": "Deleta um usuário de um grupo",
@@ -612,7 +619,8 @@
             "500": {
               "description": "Erro interno do servidor."
             }
-          }
+          },
+          "security": [{ "bearerAuth": [] }]
         }
       }
     }

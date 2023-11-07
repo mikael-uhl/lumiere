@@ -4,12 +4,40 @@ import passport from "../config/passport.js";
 
 const router = express.Router();
 
-router.get("/", groupController.getAllGroups);
-router.get("/:id", groupController.getGroupById);
-router.post("/", groupController.createGroup);
-router.post("/:groupId/users/:userId", groupController.addUserToGroup);
-router.delete("/:groupId/users/:userId", groupController.addUserToGroup);
-router.put("/", passport.authenticate('jwt', { session: false }), groupController.updateGroup);
-router.delete("/", groupController.deleteGroup);
+router.get(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  groupController.getAllGroups
+);
+router.get(
+  "/:id",
+  passport.authenticate("jwt", { session: false }),
+  groupController.getGroupById
+);
+router.post(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  groupController.createGroup
+);
+router.post(
+  "/:groupId/users/:userId",
+  passport.authenticate("jwt", { session: false }),
+  groupController.addUserToGroup
+);
+router.delete(
+  "/:groupId/users/:userId",
+  passport.authenticate("jwt", { session: false }),
+  groupController.addUserToGroup
+);
+router.put(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  groupController.updateGroup
+);
+router.delete(
+  "/",
+  passport.authenticate("jwt", { session: false }),
+  groupController.deleteGroup
+);
 
 export default router;

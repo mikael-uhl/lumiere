@@ -2,6 +2,7 @@ import express from "express";
 import authRoutes from "../routes/authRoutes.js";
 import groupRoutes from "../routes/groupRoutes.js";
 import userRotes from "../routes/userRoutes.js";
+import sequelize from "../../db/index.js";
 
 const router = express.Router();
 
