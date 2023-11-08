@@ -1,5 +1,5 @@
 import { DataTypes, Model } from "sequelize";
-import sequelize from "../../db/index.js";
+import sequelize from "../db/index.js";
 
 export class User extends Model {}
 
@@ -42,8 +42,8 @@ User.init(
     },
     password_hash: {
       type: DataTypes.STRING,
-      allowNull: false
-    }
+      allowNull: false,
+    },
   },
   {
     sequelize,

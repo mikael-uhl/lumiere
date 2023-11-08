@@ -1,5 +1,5 @@
-import { DataTypes, Model } from 'sequelize';
-import sequelize from "../../db/index.js";
+import { DataTypes, Model } from "sequelize";
+import sequelize from "../db/index.js";
 
 export class ContentItem extends Model {}
 
@@ -24,11 +24,12 @@ ContentItem.init(
     },
     completed: {
       type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
   },
   {
     sequelize,
-    modelName: 'ContentItem',
+    modelName: "ContentItem",
     timestamps: false,
   }
 );

@@ -1,13 +1,14 @@
 import express from "express";
 import cors from "cors";
-import sequelize from "./db/index.js";
+import sequelize from "./src/db/index.js";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import router from "./src/routes/index.js";
 import swaggerOptions from "./swaggerOptions.json" assert { type: "json" };
+import { PORT } from "./src/config/env.js";
 
 const app = express();
-const port = 5000;
+const port = PORT || 5000;
 
 app.use(express.json());
 app.use(cors());

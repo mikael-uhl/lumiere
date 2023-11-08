@@ -24,11 +24,15 @@
       {
         "name": "Grupos",
         "description": "Rotas relacionadas a grupos"
+      },
+      {
+        "name": "Conteúdo",
+        "description": "Rotas relacionadas a conteúdos"
       }
     ],
     "components": {
       "securitySchemes": {
-        "bearerAuth": {
+        "bearerToken": {
           "type": "http",
           "scheme": "bearer",
           "bearerFormat": "JWT"
@@ -265,7 +269,7 @@
               "description": "Erro interno do servidor."
             }
           },
-          "security": [{ "bearerAuth": [] }]
+          "security": [{ "bearerToken": [] }]
         },
         "delete": {
           "summary": "Exclui um usuário pelo ID",
@@ -287,6 +291,9 @@
             "204": {
               "description": "Sucesso. O usuário foi excluído com sucesso."
             },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
             "404": {
               "description": "Usuário não encontrado."
             },
@@ -294,7 +301,7 @@
               "description": "Erro interno do servidor."
             }
           },
-          "security": [{ "bearerAuth": [] }]
+          "security": [{ "bearerToken": [] }]
         }
       },
       "/users/email/{email}": {
@@ -377,6 +384,9 @@
             "200": {
               "description": "Sucesso. Retorna todos os grupos associados ao usuário."
             },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
             "404": {
               "description": "Usuário não encontrado."
             },
@@ -384,7 +394,7 @@
               "description": "Erro interno do servidor."
             }
           },
-          "security": [{ "bearerAuth": [] }]
+          "security": [{ "bearerToken": [] }]
         }
       },
       "/groups": {
@@ -413,11 +423,14 @@
             "201": {
               "description": "Sucesso. Retorna o grupo criado."
             },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
             "500": {
               "description": "Erro interno do servidor."
             }
           },
-          "security": [{ "bearerAuth": [] }]
+          "security": [{ "bearerToken": [] }]
         },
         "get": {
           "summary": "Retorna todos os grupos",
@@ -427,11 +440,14 @@
             "200": {
               "description": "Sucesso. Retorna a lista de grupos"
             },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
             "500": {
               "description": "Erro interno do servidor."
             }
           },
-          "security": [{ "bearerAuth": [] }]
+          "security": [{ "bearerToken": [] }]
         }
       },
       "/groups/{id}": {
@@ -455,6 +471,9 @@
             "200": {
               "description": "Sucesso. Retorna o grupo encontrado e seus usuários associados."
             },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
             "404": {
               "description": "Grupo não encontrado."
             },
@@ -462,7 +481,7 @@
               "description": "Erro interno do servidor."
             }
           },
-          "security": [{ "bearerAuth": [] }]
+          "security": [{ "bearerToken": [] }]
         },
         "put": {
           "summary": "Atualiza um grupo pelo ID",
@@ -511,7 +530,7 @@
               "description": "Erro interno do servidor."
             }
           },
-          "security": [{ "bearerAuth": [] }]
+          "security": [{ "bearerToken": [] }]
         },
         "delete": {
           "summary": "Exclui um grupo pelo ID",
@@ -533,6 +552,9 @@
             "204": {
               "description": "Sucesso. O grupo foi excluído com sucesso."
             },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
             "404": {
               "description": "Grupo não encontrado."
             },
@@ -540,10 +562,10 @@
               "description": "Erro interno do servidor."
             }
           },
-          "security": [{ "bearerAuth": [] }]
+          "security": [{ "bearerToken": [] }]
         }
       },
-      "/groups/:groupId/users/:userId": {
+      "/groups/{groupId}/users/{userId}": {
         "post": {
           "summary": "Adiciona um usuário a um grupo",
           "tags": ["Grupos"],
@@ -570,9 +592,29 @@
               }
             }
           ],
+          "requestBody": {
+            "required": "true",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "permissions": {
+                      "type": "string",
+                      "description": "Permissões do usuário",
+                      "example": "read / read-write"
+                    }
+                  }
+                }
+              }
+            }
+          },
           "responses": {
             "201": {
               "description": "Sucesso. Retorna os dados do usuário e grupo. Um membro de grupo é criado."
+            },
+            "401": {
+              "description": "Credenciais inválidas."
             },
             "404": {
               "description": "Grupo ou usuário não encontrado."
@@ -581,7 +623,7 @@
               "description": "Erro interno do servidor."
             }
           },
-          "security": [{ "bearerAuth": [] }]
+          "security": [{ "bearerToken": [] }]
         },
         "delete": {
           "summary": "Deleta um usuário de um grupo",
@@ -613,6 +655,9 @@
             "200": {
               "description": "Sucesso. Usuário removido do grupo com sucesso. Membro de grupo deletado."
             },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
             "404": {
               "description": "Grupo ou usuário não encontrado."
             },
@@ -620,7 +665,84 @@
               "description": "Erro interno do servidor."
             }
           },
-          "security": [{ "bearerAuth": [] }]
+          "security": [{ "bearerToken": [] }]
+        }
+      },
+      "/content": {
+        "post": {
+          "summary": "Cria um novo item de conteúdo",
+          "tags": ["Conteúdo"],
+          "description": "Cria um novo item de conteúdo com os dados fornecidos.",
+          "requestBody": {
+            "required": "true",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string",
+                      "description": "Título do item de conteúdo",
+                      "example": "Laranja Mecânica"
+                    },
+                    "original_title": {
+                      "type": "string",
+                      "description": "Título original do item de conteúdo",
+                      "example": "A Clockwork Orange"
+                    },
+                    "year": {
+                      "type": "integer",
+                      "description": "Ano de lançamento do item de conteúdo",
+                      "example": "1971"
+                    },
+                    "genre": {
+                      "type": "string",
+                      "description": "Gênero do item de conteúdo",
+                      "example": "Ficção Científica"
+                    },
+                    "completed": {
+                      "type": "boolean",
+                      "description": "Indica se o item de conteúdo já foi concluído"
+                    },
+                    "category_id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "ID da categoria"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Sucesso. Retorna o item de conteúdo criado."
+            },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
+            "500": {
+              "description": "Erro interno do servidor."
+            }
+          },
+          "security": [{ "bearerToken": [] }]
+        },
+        "get": {
+          "summary": "Retorna todos os itens de conteúdo",
+          "tags": ["Conteúdo"],
+          "description": "Retorna uma lista de todos os itens de conteúdo cadastrados.",
+          "responses": {
+            "200": {
+              "description": "Sucesso. Retorna a lista de itens de conteúdo"
+            },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
+            "500": {
+              "description": "Erro interno do servidor."
+            }
+          },
+          "security": [{ "bearerToken": [] }]
         }
       }
     }

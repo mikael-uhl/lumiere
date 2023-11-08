@@ -1,5 +1,5 @@
 import { DataTypes, Model } from "sequelize";
-import sequelize from "../../db/index.js";
+import sequelize from "../db/index.js";
 
 export class Group extends Model {}
 
@@ -12,7 +12,6 @@ Group.init(
     },
     group_name: {
       type: DataTypes.STRING,
-      allowNull: false,
     },
   },
   {

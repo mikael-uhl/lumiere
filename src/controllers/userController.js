@@ -16,7 +16,7 @@ export const createUser = async (req, res) => {
   try {
     const passwordHash = await bcrypt.hash(password, 10);
 
-    const user = await User.create({
+    const userData = {
       first_name,
       last_name,
       username,
@@ -25,6 +25,16 @@ export const createUser = async (req, res) => {
       phone_number,
       profile_image_url,
       password_hash: passwordHash,
+    };
+
+    const user = await User.create(userData);
+
+    const group = await Group.create();
+
+    const groupMember = await GroupMember.create({
+      group_id: group.group_id,
+      user_id: user.user_id,
+      permissions: "read-write",
     });
 
     const userWithoutPassword = user.toJSON();
@@ -54,7 +64,6 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-
 export const getUserById = async (req, res) => {
   const { id } = req.params;
 
@@ -67,7 +76,7 @@ export const getUserById = async (req, res) => {
       return res.status(404).json({ message: "Usuário não encontrado" });
     }
 
-    res.json(user);
+    res.status(200).json(user);
   } catch (error) {
     console.error("Erro ao buscar usuário por ID:", error);
     res.status(500).json({ message: "Erro ao buscar usuário por ID" });
@@ -75,10 +84,10 @@ export const getUserById = async (req, res) => {
 };
 
 export const getGroupsByUser = async (req, res) => {
-  const { id } = req.params;
+  const { userId } = req.params;
 
   try {
-    const user = await User.findByPk(id, {
+    const user = await User.findByPk(userId, {
       include: [
         {
           model: Group,
@@ -138,10 +147,9 @@ export const findByUsername = async (req, res) => {
   }
 };
 
-
 export const updateUser = async (req, res) => {
   const { id } = req.params;
-  const updatedUserData = req.body;
+  let updatedUserData = req.body;
 
   try {
     const user = await User.findByPk(id);
@@ -150,12 +158,21 @@ export const updateUser = async (req, res) => {
       return res.status(404).json({ message: "Usuário não encontrado" });
     }
 
+    if (updatedUserData.password) {
+      const passwordHash = await bcrypt.hash(updatedUserData.password, 10);
+      let { password, ...userWithoutPassword } = updatedUserData;
+      updatedUserData = { ...userWithoutPassword, password_hash: passwordHash };
+    }
+
     await user.update(updatedUserData);
 
     const userWithoutPassword = user.toJSON();
     delete userWithoutPassword.password_hash;
 
-    res.json({ message: "Usuário atualizado com sucesso", userWithoutPassword });
+    res.json({
+      message: "Usuário atualizado com sucesso",
+      userWithoutPassword,
+    });
   } catch (error) {
     console.error("Erro ao atualizar usuário:", error);
     res.status(500).json({ message: "Erro ao atualizar usuário" });

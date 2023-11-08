@@ -1,5 +1,5 @@
-import { DataTypes, Model } from 'sequelize';
-import sequelize from "../../db/index.js";
+import { DataTypes, Model } from "sequelize";
+import sequelize from "../db/index.js";
 
 export class ContentQueue extends Model {}
 
@@ -13,7 +13,7 @@ ContentQueue.init(
   },
   {
     sequelize,
-    modelName: 'ContentQueue',
+    modelName: "ContentQueue",
     timestamps: false,
   }
 );

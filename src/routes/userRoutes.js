@@ -7,7 +7,7 @@ const router = express.Router();
 router.get("/", userController.getAllUsers);
 router.get("/:id", userController.getUserById);
 router.get(
-  "/:id/groups",
+  "/:userId/groups",
   passport.authenticate("jwt", { session: false }),
   userController.getGroupsByUser
 );

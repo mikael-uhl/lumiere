@@ -1,5 +1,4 @@
 export * as authController from "./authController.js";
-export * as categoryController from "./categoryController.js";
 export * as contentItemController from "./contentItemController.js";
 export * as contentListController from "./contentListController.js";
 export * as contentQueueController from "./contentQueueController.js";

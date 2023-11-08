@@ -34,13 +34,31 @@ npm install
 3. Configure suas variáveis de ambiente no arquivo .env:
 
 ```bash
+DATABASE_USER=postgres
+DATABASE_DIALECT=postgres
+DATABASE_NAME=postgres
+DATABASE_HOST=localhost
+DATABASE_PASSWORD=""
 SECRET_KEY="chaveSecreta"
+PORT=5000
 ```
 
-4. Inicie o servidor:
+4. Inicie o banco de dados:
+
+```bash
+docker compose up
+```
+
+5. Inicie o servidor:
 
 ```bash
 yarn dev
+```
+
+6. Criar tabelas do banco de dados:
+
+```bash
+localhost:5000/create-tables
 ```
 
 A API estará disponível em http://localhost:5000.

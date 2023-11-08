@@ -1,5 +1,5 @@
-import { DataTypes, Model } from 'sequelize';
-import sequelize from "../../db/index.js";
+import { DataTypes, Model } from "sequelize";
+import sequelize from "../db/index.js";
 
 export class GroupMember extends Model {}
 
@@ -10,10 +10,14 @@ GroupMember.init(
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
+    permissions: {
+      type: DataTypes.ENUM("read", "read-write"),
+      allowNull: false,
+    },
   },
   {
     sequelize,
-    modelName: 'GroupMember',
+    modelName: "GroupMember",
     timestamps: false,
   }
 );

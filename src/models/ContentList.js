@@ -1,5 +1,5 @@
-import { DataTypes, Model } from 'sequelize';
-import sequelize from "../../db/index.js";
+import { DataTypes, Model } from "sequelize";
+import sequelize from "../db/index.js";
 
 export class ContentList extends Model {}
 
@@ -16,7 +16,7 @@ ContentList.init(
   },
   {
     sequelize,
-    modelName: 'ContentList',
+    modelName: "ContentList",
     timestamps: false,
   }
 );

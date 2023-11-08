@@ -1,5 +1,5 @@
-import { DataTypes, Model } from 'sequelize';
-import sequelize from "../../db/index.js";
+import { DataTypes, Model } from "sequelize";
+import sequelize from "../db/index.js";
 
 export class Notification extends Model {}
 
@@ -19,7 +19,7 @@ Notification.init(
   },
   {
     sequelize,
-    modelName: 'Notification',
+    modelName: "Notification",
     timestamps: false,
   }
 );

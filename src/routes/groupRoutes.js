@@ -20,7 +20,7 @@ router.post(
   groupController.createGroup
 );
 router.post(
-  "/:groupId/users/:userId",
+  "/:groupId/users/:userId/permissions/:permissions",
   passport.authenticate("jwt", { session: false }),
   groupController.addUserToGroup
 );

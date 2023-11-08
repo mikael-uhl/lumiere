@@ -1,27 +1,49 @@
 import { User } from "./User.js";
 import { Group } from "./Group.js";
 import { ContentList } from "./ContentList.js";
-import { Category } from "./Category.js";
 import { ContentItem } from "./ContentItem.js";
 import { ContentQueue } from "./ContentQueue.js";
 import { GroupMember } from "./GroupMember.js";
 import { Notification } from "./Notification.js";
 
-User.belongsToMany(Group, { through: GroupMember, foreignKey: "user_id" });
-Group.belongsToMany(User, { through: GroupMember, foreignKey: "group_id" });
+User.belongsToMany(Group, {
+  through: GroupMember,
+  foreignKey: {
+    name: "user_id",
+    allowNull: false,
+  },
+});
+Group.belongsToMany(User, {
+  through: GroupMember,
+  foreignKey: {
+    name: "group_id",
+    allowNull: false,
+  },
+});
+
 Group.hasMany(ContentList, { foreignKey: "group_id" });
 ContentList.belongsTo(Group, { foreignKey: "group_id" });
-ContentList.hasMany(Category, { foreignKey: "list_id" });
-Category.belongsTo(ContentList, { foreignKey: "list_id" });
-Category.hasMany(ContentItem, { foreignKey: "category_id" });
-ContentItem.belongsTo(Category, { foreignKey: "category_id" });
-ContentList.hasMany(ContentQueue, { foreignKey: "list_id" });
-ContentItem.hasMany(ContentQueue, { foreignKey: "item_id" });
-User.hasMany(Notification, { foreignKey: "user_id" });
-Notification.belongsTo(User, { foreignKey: "user_id" });
+ContentList.hasMany(ContentItem, { foreignKey: "list_id" });
+ContentItem.belongsTo(ContentList, { foreignKey: "list_id" });
+Group.hasOne(ContentQueue, { foreignKey: "group_id" });
+ContentQueue.belongsTo(Group, { foreignKey: "group_id" });
+ContentQueue.hasMany(ContentItem, { foreignKey: "queue_id"})
+ContentItem.belongsTo(ContentQueue, { foreignKey: "queue_id" });
+
+User.hasMany(Notification, {
+  foreignKey: {
+    name: "user_id",
+    allowNull: false,
+  },
+});
+Notification.belongsTo(User, {
+  foreignKey: {
+    name: "user_id",
+    allowNull: false,
+  },
+});
 
 export {
-  Category,
   ContentItem,
   ContentList,
   ContentQueue,

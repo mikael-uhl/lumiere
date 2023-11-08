@@ -1,8 +1,9 @@
 import bcrypt from "bcrypt";
 import { User } from "../models/index.js";
 import jwt from "jsonwebtoken";
+import { SECRET_KEY } from "../config/env.js";
 
-const secretKey = "chaveSecreta";
+const secretKey = SECRET_KEY;
 
 export const login = async (req, res) => {
   const { email, password } = req.body;

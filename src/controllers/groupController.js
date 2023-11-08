@@ -13,6 +13,7 @@ export const createGroup = async (req, res) => {
 
 export const addUserToGroup = async (req, res) => {
   const { groupId, userId } = req.params;
+  const { permissions } = req.body;
 
   try {
     const group = await Group.findByPk(groupId);
@@ -22,9 +23,17 @@ export const addUserToGroup = async (req, res) => {
       return res.status(404).json({ error: "Grupo ou usuário não encontrado" });
     }
 
+    if (!permissions || !["read", "read-write"].includes(permissions)) {
+      return res.status(400).json({
+        error:
+          "O campo 'permissions' é obrigatório e deve ser 'read' ou 'read-write'.",
+      });
+    }
+
     const groupMember = await GroupMember.create({
       group_id: groupId,
       user_id: userId,
+      permissions,
     });
 
     return res.status(201).json(groupMember);
@@ -54,7 +63,9 @@ export const removeUserFromGroup = async (req, res) => {
 
     await groupMember.destroy();
 
-    return res.status(200).json({ message: "Usuário removido do grupo com sucesso" });
+    return res
+      .status(200)
+      .json({ message: "Usuário removido do grupo com sucesso" });
   } catch (error) {
     return res.status(500).json({ error: "Erro interno do servidor" });
   }
@@ -71,7 +82,10 @@ export const getAllGroups = async (req, res) => {
         },
       ],
     });
-    res.json(groups);
+    const groupsWithMultipleUsers = groups.filter(
+      (group) => group.Users.length > 1
+    );
+    res.json(groupsWithMultipleUsers);
   } catch (error) {
     console.error("Erro ao buscar todos os grupos:", error);
     res.status(500).json({ message: "Erro ao buscar grupos" });
@@ -88,8 +102,8 @@ export const getGroupById = async (req, res) => {
           model: User,
           through: GroupMember,
           attributes: { exclude: ["password_hash"] },
-        }
-      ]
+        },
+      ],
     });
 
     if (!group) {
