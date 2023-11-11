@@ -8,6 +8,6 @@ services:
     volumes:
       - dados:/var/lib/postgres/data
     environment:
-      - "POSTGRES_HOST_AUTH_METHOD=trust"
+      - "POSTGRES_PASSWORD=password"
     ports:
       - "5432:5432"

@@ -1,11 +1,11 @@
-import { ContentList } from "../models/ContentList.js";
+import { ContentList } from "../models/index.js";
 
 export const getAllContentLists = async (req, res) => {
   try {
     const contentLists = await ContentList.findAll();
-    res.json(contentLists);
+    return res.status(200).json(contentLists);
   } catch (error) {
     console.error("Erro ao buscar todas as listas de conteúdo:", error);
-    res.status(500).json({ message: "Erro ao buscar listas de conteúdo" });
+    return res.status(500).json({ error: "Erro ao buscar listas de conteúdo" });
   }
 };

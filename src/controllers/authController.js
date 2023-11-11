@@ -14,7 +14,7 @@ export const login = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(401).json({ message: "Usuário não encontrado" });
+      return res.status(404).json({ error: "Usuário não encontrado" });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password_hash);
@@ -27,18 +27,18 @@ export const login = async (req, res) => {
         expiresIn: "1h",
       });
 
-      return res.json({
+      return res.status(200).json({
         message: "Login bem-sucedido",
         token,
         user: userWithoutPassword,
       });
     } else {
-      return res.status(401).json({ message: "Credenciais inválidas" });
+      return res.status(401).json({ error: "Credenciais inválidas" });
     }
   } catch (error) {
     console.error("Erro ao fazer login:", error);
     res
       .status(500)
-      .json({ message: "Erro ao fazer login", error: error.message });
+      .json({ error: "Erro ao fazer login", error: error.message });
   }
 };

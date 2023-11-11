@@ -28,6 +28,10 @@
       {
         "name": "Conteúdo",
         "description": "Rotas relacionadas a conteúdos"
+      },
+      {
+        "name": "Notificações",
+        "description": "Rotas relacionadas a notificações"
       }
     ],
     "components": {
@@ -450,14 +454,82 @@
           "security": [{ "bearerToken": [] }]
         }
       },
-      "/groups/{id}": {
+      "/groups/{groupId}/content-lists": {
+        "get": {
+          "summary": "Retorna as listas de conteúdo de um grupo pelo ID",
+          "tags": ["Grupos"],
+          "description": "Retorna um grupo específico e suas listas de conteúdo associados com base no ID fornecido.",
+          "parameters": [
+            {
+              "name": "groupId",
+              "in": "path",
+              "required": "true",
+              "description": "ID do grupo a ser recuperado.",
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Sucesso. Retorna o grupo encontrado e suas listas de conteúdo associados."
+            },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
+            "404": {
+              "description": "Grupo não encontrado."
+            },
+            "500": {
+              "description": "Erro interno do servidor."
+            }
+          },
+          "security": [{ "bearerToken": [] }]
+        }
+      },
+      "/groups/{groupId}/content-queues": {
+        "get": {
+          "summary": "Retorna as filas de conteúdo de um grupo pelo ID",
+          "tags": ["Grupos"],
+          "description": "Retorna um grupo específico e suas fila de conteúdo associada com base no ID fornecido.",
+          "parameters": [
+            {
+              "name": "groupId",
+              "in": "path",
+              "required": "true",
+              "description": "ID do grupo a ser recuperado.",
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Sucesso. Retorna o grupo encontrado e sua fila de conteúdo associada."
+            },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
+            "404": {
+              "description": "Grupo não encontrado."
+            },
+            "500": {
+              "description": "Erro interno do servidor."
+            }
+          },
+          "security": [{ "bearerToken": [] }]
+        }
+      },
+      "/groups/{groupId}": {
         "get": {
           "summary": "Retorna um grupo pelo ID",
           "tags": ["Grupos"],
           "description": "Retorna um grupo específico e seus usuários associados com base no ID fornecido.",
           "parameters": [
             {
-              "name": "id",
+              "name": "groupId",
               "in": "path",
               "required": "true",
               "description": "ID do grupo a ser recuperado.",
@@ -489,7 +561,7 @@
           "description": "Atualiza as informações de um grupo com base no ID fornecido.",
           "parameters": [
             {
-              "name": "id",
+              "name": "groupId",
               "in": "path",
               "required": "true",
               "description": "ID do grupo a ser atualizado.",
@@ -538,7 +610,7 @@
           "description": "Exclui um grupo com base no ID fornecido.",
           "parameters": [
             {
-              "name": "id",
+              "name": "groupId",
               "in": "path",
               "required": "true",
               "description": "ID do grupo a ser excluído.",
@@ -734,6 +806,64 @@
           "responses": {
             "200": {
               "description": "Sucesso. Retorna a lista de itens de conteúdo"
+            },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
+            "500": {
+              "description": "Erro interno do servidor."
+            }
+          },
+          "security": [{ "bearerToken": [] }]
+        }
+      },
+      "/notifications": {
+        "post": {
+          "summary": "Cria uma nova notificação",
+          "tags": ["Notificações"],
+          "description": "Cria uma nova notificação.",
+          "requestBody": {
+            "required": "true",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Mensagem da notificação",
+                      "example": "Texto de Notificação"
+                    },
+                    "user_id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "ID do usuário."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Sucesso. Retorna a notificação criada."
+            },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
+            "500": {
+              "description": "Erro interno do servidor."
+            }
+          },
+          "security": [{ "bearerToken": [] }]
+        },
+        "get": {
+          "summary": "Retorna todas as notificações",
+          "tags": ["Notificações"],
+          "description": "Retorna uma lista com todas as notificações cadastradas.",
+          "responses": {
+            "200": {
+              "description": "Sucesso. Retorna a lista de notificações"
             },
             "401": {
               "description": "Credenciais inválidas."

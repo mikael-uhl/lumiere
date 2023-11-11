@@ -1,5 +1,12 @@
 import bcrypt from "bcrypt";
-import { User, Group, GroupMember } from "../models/index.js";
+import {
+  User,
+  Group,
+  GroupMember,
+  ContentItem,
+  ContentList,
+  ContentQueue,
+} from "../models/index.js";
 
 export const createUser = async (req, res) => {
   const {
@@ -28,8 +35,9 @@ export const createUser = async (req, res) => {
     };
 
     const user = await User.create(userData);
-
-    const group = await Group.create();
+    const group = await Group.create({ group_name: "Minhas Listas" });
+    const contentList = await ContentList.create({ list_name: "Lista Padrão" });
+    await group.addContentList(contentList);
 
     const groupMember = await GroupMember.create({
       group_id: group.group_id,
@@ -40,15 +48,12 @@ export const createUser = async (req, res) => {
     const userWithoutPassword = user.toJSON();
     delete userWithoutPassword.password_hash;
 
-    res.status(201).json({
-      message: "Usuário criado com sucesso",
-      user: userWithoutPassword,
-    });
+    return res.status(201).json(userWithoutPassword);
   } catch (error) {
     console.error("Erro ao criar usuário:", error);
     res
       .status(500)
-      .json({ message: "Erro ao criar usuário", error: error.message });
+      .json({ error: "Erro ao criar usuário", error: error.message });
   }
 };
 
@@ -57,10 +62,10 @@ export const getAllUsers = async (req, res) => {
     const users = await User.findAll({
       attributes: { exclude: ["password_hash"] },
     });
-    res.json(users);
+    return res.status(200).json(users);
   } catch (error) {
     console.error("Erro ao buscar todos os usuários:", error);
-    res.status(500).json({ message: "Erro ao buscar usuários" });
+    return res.status(500).json({ error: "Erro ao buscar usuários" });
   }
 };
 
@@ -73,13 +78,13 @@ export const getUserById = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ message: "Usuário não encontrado" });
+      return res.status(404).json({ error: "Usuário não encontrado" });
     }
 
-    res.status(200).json(user);
+    return res.status(200).json(user);
   } catch (error) {
     console.error("Erro ao buscar usuário por ID:", error);
-    res.status(500).json({ message: "Erro ao buscar usuário por ID" });
+    return res.status(500).json({ error: "Erro ao buscar usuário por ID" });
   }
 };
 
@@ -92,6 +97,16 @@ export const getGroupsByUser = async (req, res) => {
         {
           model: Group,
           through: GroupMember,
+          include: [
+            {
+              model: ContentList,
+              include: ContentItem,
+            },
+            {
+              model: ContentQueue,
+              include: ContentItem,
+            },
+          ],
         },
       ],
       attributes: { exclude: ["password_hash"] },
@@ -117,13 +132,13 @@ export const findByEmail = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ message: "Usuário não encontrado" });
+      return res.status(404).json({ error: "Usuário não encontrado" });
     }
 
-    res.json(user);
+    return res.status(200).json(user);
   } catch (error) {
     console.error("Erro ao encontrar usuário por e-mail:", error);
-    res.status(500).json({ message: "Erro ao encontrar usuário" });
+    return res.status(500).json({ error: "Erro ao encontrar usuário" });
   }
 };
 
@@ -137,13 +152,13 @@ export const findByUsername = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ message: "Usuário não encontrado" });
+      return res.status(404).json({ error: "Usuário não encontrado" });
     }
 
-    res.json(user);
+    return res.status(200).json(user);
   } catch (error) {
     console.error("Erro ao encontrar usuário por nome de usuário:", error);
-    res.status(500).json({ message: "Erro ao encontrar usuário" });
+    return res.status(500).json({ error: "Erro ao encontrar usuário" });
   }
 };
 
@@ -155,13 +170,13 @@ export const updateUser = async (req, res) => {
     const user = await User.findByPk(id);
 
     if (!user) {
-      return res.status(404).json({ message: "Usuário não encontrado" });
+      return res.status(404).json({ error: "Usuário não encontrado" });
     }
 
     if (updatedUserData.password) {
       const passwordHash = await bcrypt.hash(updatedUserData.password, 10);
-      let { password, ...userWithoutPassword } = updatedUserData;
-      updatedUserData = { ...userWithoutPassword, password_hash: passwordHash };
+      updatedUserData.password_hash = passwordHash;
+      delete updatedUserData.password;
     }
 
     await user.update(updatedUserData);
@@ -169,13 +184,13 @@ export const updateUser = async (req, res) => {
     const userWithoutPassword = user.toJSON();
     delete userWithoutPassword.password_hash;
 
-    res.json({
+    return res.status(200).json({
       message: "Usuário atualizado com sucesso",
-      userWithoutPassword,
+      user: userWithoutPassword,
     });
   } catch (error) {
     console.error("Erro ao atualizar usuário:", error);
-    res.status(500).json({ message: "Erro ao atualizar usuário" });
+    return res.status(500).json({ error: "Erro ao atualizar usuário" });
   }
 };
 
@@ -186,14 +201,14 @@ export const deleteUser = async (req, res) => {
     const user = await User.findByPk(id);
 
     if (!user) {
-      return res.status(404).json({ message: "Usuário não encontrado" });
+      return res.status(404).json({ error: "Usuário não encontrado" });
     }
 
     await user.destroy();
 
-    res.json({ message: "Usuário excluído com sucesso" });
+    return res.status(204).json({ message: "Usuário excluído com sucesso" });
   } catch (error) {
     console.error("Erro ao excluir usuário:", error);
-    res.status(500).json({ message: "Erro ao excluir usuário" });
+    return res.status(500).json({ error: "Erro ao excluir usuário" });
   }
 };

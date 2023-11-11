@@ -1,6 +1,6 @@
 import express from "express";
 import { userController } from "../controllers/index.js";
-import passport from "../config/passport.js";
+import authenticationMiddleware from "../config/authenticationMiddleware.js";
 
 const router = express.Router();
 
@@ -8,20 +8,12 @@ router.get("/", userController.getAllUsers);
 router.get("/:id", userController.getUserById);
 router.get(
   "/:userId/groups",
-  passport.authenticate("jwt", { session: false }),
+  authenticationMiddleware,
   userController.getGroupsByUser
 );
 router.post("/", userController.createUser);
-router.put(
-  "/:id",
-  passport.authenticate("jwt", { session: false }),
-  userController.updateUser
-);
-router.delete(
-  "/:id",
-  passport.authenticate("jwt", { session: false }),
-  userController.deleteUser
-);
+router.put("/:id", authenticationMiddleware, userController.updateUser);
+router.delete("/:id", authenticationMiddleware, userController.deleteUser);
 router.get("/email/:email", userController.findByEmail);
 router.get("/username/:username", userController.findByUsername);
 

@@ -12,9 +12,11 @@ Notification.init(
     },
     message: {
       type: DataTypes.TEXT,
+      allowNull: false,
     },
     created_at: {
       type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
     },
   },
   {
