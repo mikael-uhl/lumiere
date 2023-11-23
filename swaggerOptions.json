@@ -268,7 +268,7 @@
               "description": "Sucesso. Retorna o usuário atualizado."
             },
             "401": {
-              "description": "Não autorizado. Token inválido ou ausente."
+              "description": "Credenciais inválidas."
             },
             "404": {
               "description": "Usuário não encontrado."
@@ -597,7 +597,7 @@
               "description": "Sucesso. Retorna o grupo atualizado."
             },
             "401": {
-              "description": "Não autorizado. Token inválido ou ausente."
+              "description": "Credenciais inválidas."
             },
             "404": {
               "description": "Usuário não encontrado."
@@ -821,6 +821,142 @@
           "security": [{ "bearerToken": [] }]
         }
       },
+      "/content/{itemId}": {
+        "get": {
+          "summary": "Retorna todos um itens de conteúdo pelo ID",
+          "tags": ["Conteúdo"],
+          "description": "Retorna um item de conteúdo associados ao ID fornecido.",
+          "parameters": [
+            {
+              "name": "itemId",
+              "in": "path",
+              "required": "true",
+              "description": "ID do item de conteúdo.",
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Sucesso. Retorna um item de conteúdo."
+            },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
+            "500": {
+              "description": "Erro interno do servidor."
+            }
+          },
+          "security": [{ "bearerToken": [] }]
+        },
+        "put": {
+          "summary": "Atualiza um item de conteúdo pelo ID",
+          "tags": ["Conteúdo"],
+          "description": "Atualiza as informações de um item de conteúdo com base no ID fornecido.",
+          "parameters": [
+            {
+              "name": "itemId",
+              "in": "path",
+              "required": "true",
+              "description": "ID do item de conteúdo a ser atualizado.",
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": "true",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string",
+                      "description": "Título do item de conteúdo",
+                      "example": "Laranja Mecânica"
+                    },
+                    "original_title": {
+                      "type": "string",
+                      "description": "Título original do item de conteúdo",
+                      "example": "A Clockwork Orange"
+                    },
+                    "year": {
+                      "type": "integer",
+                      "description": "Ano de lançamento do item de conteúdo",
+                      "example": "1971"
+                    },
+                    "genre": {
+                      "type": "string",
+                      "description": "Gênero do item de conteúdo",
+                      "example": "Ficção Científica"
+                    },
+                    "completed": {
+                      "type": "boolean",
+                      "description": "Indica se o item de conteúdo já foi concluído"
+                    },
+                    "category_id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "description": "ID da categoria"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Sucesso. Retorna o item de conteúdo atualizado."
+            },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
+            "404": {
+              "description": "Item de conteúdo não encontrado."
+            },
+            "500": {
+              "description": "Erro interno do servidor."
+            }
+          },
+          "security": [{ "bearerToken": [] }]
+        },
+        "delete": {
+          "summary": "Exclui um item de conteúdo pelo ID",
+          "tags": ["Conteúdo"],
+          "description": "Exclui um item de conteúdo com base no ID fornecido.",
+          "parameters": [
+            {
+              "name": "itemId",
+              "in": "path",
+              "required": "true",
+              "description": "ID do item de conteúdo a ser excluído.",
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "Sucesso. O item de conteúdo foi excluída com sucesso."
+            },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
+            "404": {
+              "description": "Item de conteúdo não encontrado."
+            },
+            "500": {
+              "description": "Erro interno do servidor."
+            }
+          },
+          "security": [{ "bearerToken": [] }]
+        }
+      },
       "/content/{listId}": {
         "get": {
           "summary": "Retorna todos os itens de conteúdo de uma lista",
@@ -939,6 +1075,38 @@
             }
           },
           "security": [{ "bearerToken": [] }]
+        },
+        "delete": {
+          "summary": "Exclui uma notificação pelo ID",
+          "tags": ["Notificações"],
+          "description": "Exclui uma notificação com base no ID fornecido.",
+          "parameters": [
+            {
+              "name": "notificationId",
+              "in": "path",
+              "required": "true",
+              "description": "ID da notificação a ser excluída.",
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "Sucesso. A notificação foi excluída com sucesso."
+            },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
+            "404": {
+              "description": "Notificação não encontrada."
+            },
+            "500": {
+              "description": "Erro interno do servidor."
+            }
+          },
+          "security": [{ "bearerToken": [] }]
         }
       },
       "/notifications/user/{userId}": {
@@ -984,10 +1152,14 @@
             "200": {
               "description": "Sucesso. Retorna a lista de imagens."
             },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
             "500": {
               "description": "Erro interno do servidor."
             }
-          }
+          },
+          "security": [{ "bearerToken": [] }]
         }
       },
       "/pictures/{pictureId}": {
@@ -1019,13 +1191,49 @@
                 }
               }
             },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
             "404": {
               "description": "Imagem não encontrada."
             },
             "500": {
               "description": "Erro interno do servidor."
             }
-          }
+          },
+          "security": [{ "bearerToken": [] }]
+        },
+        "delete": {
+          "summary": "Exclui uma imagem pelo ID",
+          "tags": ["Imagens"],
+          "description": "Exclui uma imagem com base no ID fornecido.",
+          "parameters": [
+            {
+              "name": "pictureId",
+              "in": "path",
+              "required": "true",
+              "description": "ID da imagem a ser excluída.",
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+          "responses": {
+            "204": {
+              "description": "Sucesso. A imagem foi excluída com sucesso."
+            },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
+            "404": {
+              "description": "Imagem não encontrada."
+            },
+            "500": {
+              "description": "Erro interno do servidor."
+            }
+          },
+          "security": [{ "bearerToken": [] }]
         }
       },
       "/pictures/add-url": {
@@ -1054,10 +1262,14 @@
             "201": {
               "description": "Sucesso. Retorna a imagem criada."
             },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
             "500": {
               "description": "Erro interno do servidor."
             }
-          }
+          },
+          "security": [{ "bearerToken": [] }]
         }
       },
       "/pictures/add-url/{userId}": {
@@ -1110,13 +1322,17 @@
             "201": {
               "description": "Sucesso. Retorna a imagem criada."
             },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
             "404": {
               "description": "Usuário não encontrado."
             },
             "500": {
               "description": "Erro interno do servidor."
             }
-          }
+          },
+          "security": [{ "bearerToken": [] }]
         }
       },
       "/pictures/upload": {
@@ -1145,10 +1361,14 @@
             "201": {
               "description": "Sucesso. Retorna a imagem criada."
             },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
             "500": {
               "description": "Erro interno do servidor."
             }
-          }
+          },
+          "security": [{ "bearerToken": [] }]
         }
       },
       "/pictures/upload/{userId}": {
@@ -1189,14 +1409,17 @@
             "201": {
               "description": "Sucesso. Retorna a imagem criada."
             },
-
+            "401": {
+              "description": "Credenciais inválidas."
+            },
             "404": {
               "description": "Usuário não encontrado."
             },
             "500": {
               "description": "Erro interno do servidor."
             }
-          }
+          },
+          "security": [{ "bearerToken": [] }]
         }
       }
     }

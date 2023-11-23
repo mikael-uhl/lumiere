@@ -131,3 +131,31 @@ export const getPictureById = async (req, res) => {
     return res.status(500).json({ error: "Erro ao buscar imagem" });
   }
 };
+
+export const deletePicture = async (req, res) => {
+  try {
+    const { pictureId } = req.params;
+    const picture = await Picture.findByPk(pictureId);
+
+    if (!picture) {
+      return res.status(404).json({ error: "Imagem não encontrada!" });
+    }
+
+    const imagePath = join(getProjectRoot(), picture.picture_src);
+    const fileExists = await fs
+      .access(imagePath)
+      .then(() => true)
+      .catch(() => false);
+
+    await picture.destroy();
+
+    if (fileExists) {
+      await fs.unlink(imagePath);
+      console.log("Imagem deletada dos arquivos!");
+    }
+
+    return res.status(204).json({ message: "Imagem excluída com sucesso!" });
+  } catch (error) {
+    return res.status(500).json({ error: "Erro ao excluir imagem!" });
+  }
+};

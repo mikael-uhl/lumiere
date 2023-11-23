@@ -11,8 +11,16 @@ router.get(
   contentItemController.getAllContentItems
 );
 router.get(
+  "/:itemId",
+  contentItemController.getContentItemById
+);
+router.put(
+  "/:itemId",
+  contentItemController.updateContentItem
+);
+router.delete(
   "/:listId",
-  contentItemController.getItemsInList
+  contentItemController.deleteContentItem
 );
 router.post(
   "/",

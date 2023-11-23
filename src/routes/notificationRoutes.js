@@ -9,6 +9,7 @@ router.use(authenticationMiddleware);
 router.post("/", notificationController.createNotification);
 router.get("/", notificationController.getAllNotifications);
 router.get("/:notificationId", notificationController.getNotificationById);
+router.delete("/:notificationId", notificationController.deleteNotification);
 router.get("/user/:userId", notificationController.getNotificationByUser);
 
 export default router;
