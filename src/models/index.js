@@ -1,10 +1,11 @@
-import { User } from "./User.js";
-import { Group } from "./Group.js";
 import { ContentList } from "./ContentList.js";
 import { ContentItem } from "./ContentItem.js";
 import { ContentQueue } from "./ContentQueue.js";
+import { Group } from "./Group.js";
 import { GroupMember } from "./GroupMember.js";
 import { Notification } from "./Notification.js";
+import { Picture } from "./Picture.js";
+import { User } from "./User.js";
 
 User.belongsToMany(Group, {
   through: GroupMember,
@@ -27,7 +28,7 @@ ContentList.hasMany(ContentItem, { foreignKey: "list_id" });
 ContentItem.belongsTo(ContentList, { foreignKey: "list_id" });
 Group.hasOne(ContentQueue, { foreignKey: "group_id" });
 ContentQueue.belongsTo(Group, { foreignKey: "group_id" });
-ContentQueue.hasMany(ContentItem, { foreignKey: "queue_id"})
+ContentQueue.hasMany(ContentItem, { foreignKey: "queue_id" });
 ContentItem.belongsTo(ContentQueue, { foreignKey: "queue_id" });
 
 User.hasMany(Notification, {
@@ -50,5 +51,6 @@ export {
   Group,
   GroupMember,
   Notification,
+  Picture,
   User,
 };

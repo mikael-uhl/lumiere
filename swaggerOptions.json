@@ -9,7 +9,7 @@
     "servers": [
       {
         "url": "http://localhost:5000",
-        "description": "Endereço da aplicação."
+        "description": "Endereço local."
       }
     ],
     "tags": [
@@ -32,6 +32,10 @@
       {
         "name": "Notificações",
         "description": "Rotas relacionadas a notificações"
+      },
+      {
+        "name": "Imagens",
+        "description": "Rotas relacionadas a imagens"
       }
     ],
     "components": {
@@ -817,6 +821,37 @@
           "security": [{ "bearerToken": [] }]
         }
       },
+      "/content/{listId}": {
+        "get": {
+          "summary": "Retorna todos os itens de conteúdo de uma lista",
+          "tags": ["Conteúdo"],
+          "description": "Retorna uma lista de todos os itens de conteúdo associados à lista informada.",
+          "parameters": [
+            {
+              "name": "listId",
+              "in": "path",
+              "required": "true",
+              "description": "ID da lista.",
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Sucesso. Retorna a lista de itens de conteúdo"
+            },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
+            "500": {
+              "description": "Erro interno do servidor."
+            }
+          },
+          "security": [{ "bearerToken": [] }]
+        }
+      },
       "/notifications": {
         "post": {
           "summary": "Cria uma nova notificação",
@@ -873,6 +908,295 @@
             }
           },
           "security": [{ "bearerToken": [] }]
+        }
+      },
+      "/notifications/{notificationId}": {
+        "get": {
+          "summary": "Retorna uma notificação pelo ID",
+          "tags": ["Notificações"],
+          "description": "Retorna uma notificação com base no ID fornecido.",
+          "parameters": [
+            {
+              "name": "notificationId",
+              "in": "path",
+              "required": "true",
+              "description": "ID da notificação.",
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Sucesso. Retorna a lista de notificações"
+            },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
+            "500": {
+              "description": "Erro interno do servidor."
+            }
+          },
+          "security": [{ "bearerToken": [] }]
+        }
+      },
+      "/notifications/user/{userId}": {
+        "get": {
+          "summary": "Retorna todas as notificações de um usuário",
+          "tags": ["Notificações"],
+          "description": "Retorna uma lista de notificações associados ao usuário fornecido.",
+          "parameters": [
+            {
+              "name": "userId",
+              "in": "path",
+              "required": "true",
+              "description": "ID do usuário.",
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Sucesso. Retorna a lista de notificações associadas ao usuário."
+            },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
+            "404": {
+              "description": "Usuário não encontrado."
+            },
+            "500": {
+              "description": "Erro interno do servidor."
+            }
+          },
+          "security": [{ "bearerToken": [] }]
+        }
+      },
+      "/pictures": {
+        "get": {
+          "summary": "Retorna todas as imagens",
+          "tags": ["Imagens"],
+          "description": "Retorna uma lista de todas as imagens salvas.",
+          "responses": {
+            "200": {
+              "description": "Sucesso. Retorna a lista de imagens."
+            },
+            "500": {
+              "description": "Erro interno do servidor."
+            }
+          }
+        }
+      },
+      "/pictures/{pictureId}": {
+        "get": {
+          "summary": "Retorna uma imagem pelo ID",
+          "tags": ["Imagens"],
+          "description": "Retorna uma imagem com base no ID fornecido.",
+          "parameters": [
+            {
+              "name": "pictureId",
+              "in": "path",
+              "required": "true",
+              "description": "ID da imagem.",
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Sucesso. Retorna uma imagem.",
+              "content": {
+                "image/*": {
+                  "schema": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Imagem não encontrada."
+            },
+            "500": {
+              "description": "Erro interno do servidor."
+            }
+          }
+        }
+      },
+      "/pictures/add-url": {
+        "post": {
+          "summary": "Faz upload de uma imagem através de um url",
+          "tags": ["Imagens"],
+          "description": "Faz upload de um arquivo de imagem através do endereço url enviado.",
+          "requestBody": {
+            "required": "true",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "imageLink": {
+                      "type": "string",
+                      "description": "Endereço url da imagem.",
+                      "format": "uri"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Sucesso. Retorna a imagem criada."
+            },
+            "500": {
+              "description": "Erro interno do servidor."
+            }
+          }
+        }
+      },
+      "/pictures/add-url/{userId}": {
+        "post": {
+          "summary": "Faz upload de uma foto de perfil através de um url.",
+          "tags": ["Imagens"],
+          "description": "Faz upload de um arquivo de imagem através do endereço url enviado e adiciona como foto de perfil do usuário informado.",
+          "parameters": [
+            {
+              "name": "userId",
+              "in": "path",
+              "parameters": [
+            {
+              "name": "userId",
+              "in": "path",
+              "required": "true",
+              "description": "ID do usuário.",
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+              "required": "true",
+              "description": "ID do usuário.",
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": "true",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "imageLink": {
+                      "type": "string",
+                      "description": "Endereço url da imagem.",
+                      "format": "uri"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Sucesso. Retorna a imagem criada."
+            },
+            "404": {
+              "description": "Usuário não encontrado."
+            },
+            "500": {
+              "description": "Erro interno do servidor."
+            }
+          }
+        }
+      },
+      "/pictures/upload": {
+        "post": {
+          "summary": "Faz upload de uma imagem",
+          "tags": ["Imagens"],
+          "description": "Faz upload de um arquivo de imagem enviado.",
+          "requestBody": {
+            "required": "true",
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "file": {
+                      "type": "string",
+                      "description": "Arquivo de imagem",
+                      "format": "binary"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Sucesso. Retorna a imagem criada."
+            },
+            "500": {
+              "description": "Erro interno do servidor."
+            }
+          }
+        }
+      },
+      "/pictures/upload/{userId}": {
+        "post": {
+          "summary": "Faz upload de uma foto de perfil",
+          "tags": ["Imagens"],
+          "description": "Faz upload de um arquivo de imagem enviado e adiciona como foto de perfil do usuário informado.",
+          "parameters": [
+            {
+              "name": "userId",
+              "in": "path",
+              "required": "true",
+              "description": "ID do usuário.",
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": "true",
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "file": {
+                      "type": "string",
+                      "description": "Arquivo de imagem",
+                      "format": "binary"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Sucesso. Retorna a imagem criada."
+            },
+
+            "404": {
+              "description": "Usuário não encontrado."
+            },
+            "500": {
+              "description": "Erro interno do servidor."
+            }
+          }
         }
       }
     }

@@ -6,9 +6,12 @@ import swaggerUi from "swagger-ui-express";
 import router from "./src/routes/index.js";
 import swaggerOptions from "./swaggerOptions.json" assert { type: "json" };
 import { PORT } from "./src/config/env.js";
+import getProjectRoot from "./src/config/projectRoot.js";
 
 const app = express();
 const port = PORT || 5000;
+
+console.log(getProjectRoot());
 
 app.use(express.json());
 app.use(cors());
