@@ -1281,18 +1281,6 @@
             {
               "name": "userId",
               "in": "path",
-              "parameters": [
-            {
-              "name": "userId",
-              "in": "path",
-              "required": "true",
-              "description": "ID do usuário.",
-              "schema": {
-                "type": "string",
-                "format": "uuid"
-              }
-            }
-          ],
               "required": "true",
               "description": "ID do usuário.",
               "schema": {

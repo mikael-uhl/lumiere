@@ -4,15 +4,15 @@ import authenticationMiddleware from "../config/authenticationMiddleware.js";
 import upload from "../config/multer.js";
 
 const router = express.Router();
-router.use(authenticationMiddleware);
 
-router.post("/upload", upload.single("file"), pictureController.uploadPicture);
-router.post("/add-url", pictureController.addImageUrl);
+router.post("/upload", authenticationMiddleware, upload.single("file"), pictureController.uploadPicture);
+router.post("/add-url", authenticationMiddleware, pictureController.addImageUrl);
 router.get("/", pictureController.getAllPictures);
 router.get("/:pictureId", pictureController.getPictureById);
-router.delete("/:pictureId", pictureController.deletePicture);
+router.delete("/:pictureId", authenticationMiddleware, pictureController.deletePicture);
 router.post(
   "/profile-image/upload/:userId",
+  authenticationMiddleware,
   upload.single("file"),
   pictureController.uploadProfileImage
 );

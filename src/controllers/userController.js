@@ -21,6 +21,22 @@ export const createUser = async (req, res) => {
   } = req.body;
 
   try {
+    const usernameAlreadyExists = await User.findOne({
+      where: { username },
+    });
+
+    if (usernameAlreadyExists) {
+      throw new Error("Nome de usuário já cadastrado!");
+    }
+
+    const emailAlreadyExists = await User.findOne({
+      where: { email },
+    });
+
+    if (emailAlreadyExists) {
+      throw new Error("E-mail já cadastrado!");
+    }
+
     const passwordHash = await bcrypt.hash(password, 10);
 
     const userData = {
@@ -99,9 +115,15 @@ export const getGroupsByUser = async (req, res) => {
           through: GroupMember,
           include: [
             {
+              model: User,
+              through: GroupMember,
+              attributes: { exclude: ["password_hash"] },
+            },
+            {
               model: ContentList,
               include: ContentItem,
             },
+            
             {
               model: ContentQueue,
               include: ContentItem,

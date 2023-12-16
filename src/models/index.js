@@ -5,7 +5,9 @@ import { Group } from "./Group.js";
 import { GroupMember } from "./GroupMember.js";
 import { Notification } from "./Notification.js";
 import { Picture } from "./Picture.js";
+import { RefreshToken } from "./RefreshToken.js";
 import { User } from "./User.js";
+import { Follower } from "./Follower.js";
 
 User.belongsToMany(Group, {
   through: GroupMember,
@@ -44,6 +46,9 @@ Notification.belongsTo(User, {
   },
 });
 
+User.hasOne(RefreshToken, { foreignKey: "user_id" });
+RefreshToken.belongsTo(User, { foreignKey: "user_id" });
+
 export {
   ContentItem,
   ContentList,
@@ -53,4 +58,6 @@ export {
   Notification,
   Picture,
   User,
+  RefreshToken,
+  Follower,
 };

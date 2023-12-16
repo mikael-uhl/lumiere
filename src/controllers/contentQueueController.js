@@ -9,3 +9,14 @@ export const getAllContentQueues = async (req, res) => {
     return res.status(500).json({ error: "Erro ao buscar filas de conteúdo" });
   }
 };
+
+export const createContentQueue = async (req, res) => {
+  try {
+    const { groupId } = req.params;
+    const contentQueue = await ContentQueue.create({ group_id: groupId });
+
+    return res.status(201).json(contentQueue );
+  } catch (error) {
+    return res.status(500).json({ error: "Erro interno do servidor" });
+  }
+}
