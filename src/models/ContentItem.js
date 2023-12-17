@@ -26,6 +26,10 @@ ContentItem.init(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    created_at: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+    },
   },
   {
     sequelize,

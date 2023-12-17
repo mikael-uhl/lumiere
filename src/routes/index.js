@@ -1,5 +1,6 @@
 import express from "express";
 import authRoutes from "./authRoutes.js";
+import contentListRoutes from "./contentListRoutes.js";
 import contentItemRoutes from "./contentItemRoutes.js";
 import groupRoutes from "./groupRoutes.js";
 import notificationRoutes from "./notificationRoutes.js";
@@ -11,6 +12,7 @@ const router = express.Router();
 
 router.use("/auth", authRoutes);
 router.use("/content", contentItemRoutes);
+router.use("/content-lists", contentListRoutes)
 router.use("/groups", groupRoutes);
 router.use("/notifications", notificationRoutes);
 router.use("/users", userRotes);

@@ -2,7 +2,18 @@ import { ContentItem } from "../models/index.js";
 
 export const getAllContentItems = async (req, res) => {
   try {
-    const contentItems = await ContentItem.findAll();
+    const { order, orderDirection } = req.query;
+    const defaultOrder = [["created_at", "DESC"]];
+    const defaultOrderDirection = "ASC";
+    const normalizedOrderDirection = orderDirection
+      ? orderDirection.toUpperCase()
+      : defaultOrderDirection;
+    const orderOptions = order
+      ? [[order, normalizedOrderDirection]]
+      : defaultOrder;
+    const contentItems = await ContentItem.findAll({
+      order: orderOptions,
+    });
     return res.status(200).json(contentItems);
   } catch (error) {
     console.error("Erro ao buscar todos os itens de conteúdo:", error);
@@ -80,7 +91,9 @@ export const updateContentItem = async (req, res) => {
     });
   } catch (error) {
     console.error("Erro ao atualizar item de conteúdo:", error);
-    return res.status(500).json({ error: "Erro ao atualizar item de conteúdo" });
+    return res
+      .status(500)
+      .json({ error: "Erro ao atualizar item de conteúdo" });
   }
 };
 
