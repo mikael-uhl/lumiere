@@ -26,9 +26,5 @@ router.post(
   "/",
   contentItemController.createContentItem
 );
-router.post(
-  "/:",
-  contentItemController.createContentItem
-);
 
 export default router;

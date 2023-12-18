@@ -1,4 +1,4 @@
-import { ContentItem } from "../models/index.js";
+import { ContentItem, ContentList } from "../models/index.js";
 
 export const getAllContentItems = async (req, res) => {
   try {
@@ -54,17 +54,25 @@ export const getItemsInList = async (req, res) => {
 };
 
 export const createContentItem = async (req, res) => {
-  const { title, original_title, year, genre, completed, category_id } =
-    req.body;
+  const { title, original_title, year, genre, completed, list_id } = req.body;
   try {
-    const contentItem = await ContentItem.create({
-      title,
-      original_title,
-      year,
-      genre,
-      completed,
-      category_id,
-    });
+    let contentItemData = { title, original_title, year, genre, completed };
+
+    if (list_id) {
+      const contentList = await ContentList.findByPk(list_id);
+
+      if (!contentList)
+        return res
+          .status(404)
+          .json({
+            error:
+              "O list_id fornecido não pertence a nenhuma lista de conteúdo!",
+          });
+
+      contentItemData.list_id = contentList.list_id;
+    }
+
+    const contentItem = await ContentItem.create(contentItemData);
     return res.status(201).json(contentItem);
   } catch (error) {
     console.error("Erro ao criar item de conteúdo:", error);

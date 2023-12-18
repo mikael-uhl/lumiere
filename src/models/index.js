@@ -49,6 +49,18 @@ Notification.belongsTo(User, {
 User.hasOne(RefreshToken, { foreignKey: "user_id" });
 RefreshToken.belongsTo(User, { foreignKey: "user_id" });
 
+User.belongsToMany(User, {
+  as: "Followers",
+  through: Follower,
+  foreignKey: "following_id",
+});
+
+User.belongsToMany(User, {
+  as: "Following",
+  through: Follower,
+  foreignKey: "follower_id",
+});
+
 export {
   ContentItem,
   ContentList,

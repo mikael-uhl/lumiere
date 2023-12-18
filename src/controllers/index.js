@@ -7,3 +7,4 @@ export * as groupMemberController from "./groupMemberController.js";
 export * as notificationController from "./notificationController.js";
 export * as userController from "./userController.js";
 export * as pictureController from "./pictureController.js";
+export * as followerController from "./followerController.js";

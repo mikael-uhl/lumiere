@@ -213,12 +213,12 @@ export const deleteGroup = async (req, res) => {
 
   try {
     const group = await Group.findByPk(groupId);
-    if (group) {
-      await group.destroy();
-      return res.status(204).json({ message: "Grupo excluído com sucesso" });
-    } else {
+    if (!group) {
+      console.log("Grupo não encontrado");
       return res.status(404).json({ error: "Grupo não encontrado" });
     }
+    await group.destroy();
+    return res.status(204).json({ message: "Grupo excluído com sucesso" });
   } catch (error) {
     return res.status(500).json({ error: "Erro interno do servidor" });
   }
