@@ -1,9 +1,9 @@
 import bcrypt from "bcrypt";
-import { RefreshToken, User } from "../models/index.js";
-import jwt from "jsonwebtoken";
-import { SECRET_KEY } from "../config/env.js";
-import { generateRefreshToken } from "../providers/generateRefreshToken.js";
 import dayjs from "dayjs";
+import { SECRET_KEY } from "../config/env.js";
+import { RefreshToken, User } from "../models/index.js";
+import { generateToken } from "../providers/generateToken.js";
+import { generateRefreshToken } from "../providers/generateRefreshToken.js";
 
 const secretKey = SECRET_KEY;
 
@@ -25,9 +25,7 @@ export const login = async (req, res) => {
       const userWithoutPassword = user.toJSON();
       delete userWithoutPassword.password_hash;
 
-      const token = jwt.sign({ ...userWithoutPassword }, secretKey, {
-        expiresIn: "1h",
-      });
+      const token = generateToken(userWithoutPassword);
 
       await RefreshToken.destroy({
         where: {
@@ -36,10 +34,11 @@ export const login = async (req, res) => {
       });
 
       const refreshToken = await generateRefreshToken(user.user_id);
+      const expirationTime = dayjs().add(1, "hour").unix();
 
       return res.status(200).json({
         token,
-        user: userWithoutPassword,
+        user: { ...userWithoutPassword, expirationTime },
         refreshToken,
       });
     } else {
@@ -67,10 +66,12 @@ export const refreshToken = async (req, res) => {
       throw new Error("Refresh Token Inválido!");
     }
 
-    const userWithoutPassword = await User.findOne({
+    const user = await User.findOne({
       where: { user_id: refreshToken.user_id },
-      attributes: { exclude: ["password_hash"] },
     });
+
+    const userWithoutPassword = user.toJSON();
+    delete userWithoutPassword.password_hash;
 
     const refreshTokenExpired = dayjs().isAfter(
       dayjs.unix(refreshToken.expires_in)
@@ -89,13 +90,13 @@ export const refreshToken = async (req, res) => {
       refreshToken = newRefreshToken;
     }
 
-    const token = jwt.sign({ ...userWithoutPassword }, secretKey, {
-      expiresIn: "1h",
-    });
+    const token = generateToken(userWithoutPassword);
+
+    const expirationTime = dayjs().add(1, "hour").unix();
 
     return res.status(200).json({
       token,
-      user: userWithoutPassword,
+      user: { ...userWithoutPassword, expirationTime },
       refreshToken,
     });
   } catch (error) {

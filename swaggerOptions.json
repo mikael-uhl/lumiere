@@ -1272,7 +1272,43 @@
           "security": [{ "bearerToken": [] }]
         }
       },
-      "/pictures/add-url/{userId}": {
+      "/pictures/upload": {
+        "post": {
+          "summary": "Faz upload de uma imagem",
+          "tags": ["Imagens"],
+          "description": "Faz upload de um arquivo de imagem enviado.",
+          "requestBody": {
+            "required": "true",
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "file": {
+                      "type": "string",
+                      "description": "Arquivo de imagem",
+                      "format": "binary"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Sucesso. Retorna a imagem criada."
+            },
+            "401": {
+              "description": "Credenciais inválidas."
+            },
+            "500": {
+              "description": "Erro interno do servidor."
+            }
+          },
+          "security": [{ "bearerToken": [] }]
+        }
+      },
+      "/pictures/profile-image/add-url/{userId}": {
         "post": {
           "summary": "Faz upload de uma foto de perfil através de um url.",
           "tags": ["Imagens"],
@@ -1323,43 +1359,7 @@
           "security": [{ "bearerToken": [] }]
         }
       },
-      "/pictures/upload": {
-        "post": {
-          "summary": "Faz upload de uma imagem",
-          "tags": ["Imagens"],
-          "description": "Faz upload de um arquivo de imagem enviado.",
-          "requestBody": {
-            "required": "true",
-            "content": {
-              "multipart/form-data": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "file": {
-                      "type": "string",
-                      "description": "Arquivo de imagem",
-                      "format": "binary"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "responses": {
-            "201": {
-              "description": "Sucesso. Retorna a imagem criada."
-            },
-            "401": {
-              "description": "Credenciais inválidas."
-            },
-            "500": {
-              "description": "Erro interno do servidor."
-            }
-          },
-          "security": [{ "bearerToken": [] }]
-        }
-      },
-      "/pictures/upload/{userId}": {
+      "/pictures/profile-image/upload/{userId}": {
         "post": {
           "summary": "Faz upload de uma foto de perfil",
           "tags": ["Imagens"],

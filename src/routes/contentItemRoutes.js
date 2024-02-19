@@ -19,7 +19,7 @@ router.put(
   contentItemController.updateContentItem
 );
 router.delete(
-  "/:listId",
+  "/:itemId",
   contentItemController.deleteContentItem
 );
 router.post(
